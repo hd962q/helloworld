@@ -1,25 +1,22 @@
 pipeline {
   agent any
-
+  parameters {
+    string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Which environment to deploy to?')
+  }
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
     stage('Build') {
       steps {
-        echo 'Building the project...'
+        echo "Building for environment: ${params.ENVIRONMENT}"
       }
     }
     stage('Test') {
       steps {
-        echo 'Running tests...'
+        echo "Running tests..."
       }
     }
     stage('Deploy') {
       steps {
-        echo 'Deploying the application...'
+        echo "Deploying to ${params.ENVIRONMENT} environment"
       }
     }
   }
