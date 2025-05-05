@@ -1,23 +1,27 @@
 pipeline {
   agent any
-  parameters {
-    string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Which environment to deploy to?')
-  }
   stages {
     stage('Build') {
       steps {
-        echo "Building for environment: ${params.ENVIRONMENT}"
+        echo 'Building...'
       }
     }
     stage('Test') {
       steps {
-        echo "Running tests..."
+        echo 'Running tests...'
       }
     }
-    stage('Deploy') {
-      steps {
-        echo "Deploying to ${params.ENVIRONMENT} environment"
-      }
+  }
+  post {
+    success {
+      emailext subject: "✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+               body: "Great job! View it here: ${env.BUILD_URL}",
+               to: "your_email@example.com"
+    }
+    failure {
+      emailext subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+               body: "Please check the logs at: ${env.BUILD_URL}",
+               to: "your_email@example.com"
     }
   }
 }
