@@ -5,24 +5,20 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building the app...'
+        sh 'echo "Build was successful!" > build-output.txt'
+      }
+    }
+
+    stage('Archive') {
+      steps {
+        archiveArtifacts artifacts: 'build-output.txt', fingerprint: true
       }
     }
   }
 
   post {
     success {
-      emailext (
-        subject: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-        body: "The build succeeded!\n\nCheck console output at: ${env.BUILD_URL}",
-        to: "hemanthd335@gmail.com"
-      )
-    }
-    failure {
-      emailext (
-        subject: "❌ FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-        body: "The build failed. Investigate the logs here:\n\n${env.BUILD_URL}",
-        to: "hemanthd335@gmail.com"
-      )
+      echo "✅ Build and archiving complete."
     }
   }
 }
